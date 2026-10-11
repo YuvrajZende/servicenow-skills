@@ -1,0 +1,31 @@
+<svg width="1000" height="220" viewBox="0 0 1000 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="sn-architect: architecture-first ServiceNow skills for AI coding agents">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d1b2a"/>
+      <stop offset="100%" stop-color="#1b3a5c"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#62d0a4"/>
+      <stop offset="100%" stop-color="#3fa9f5"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1000" height="220" rx="14" fill="url(#bg)"/>
+  <rect width="1000" height="220" rx="14" fill="url(#grid)"/>
+
+  <!-- terminal cursor flourish -->
+  <rect x="60" y="46" width="14" height="30" fill="url(#accent)">
+    <animate attributeName="opacity" values="1;1;0;0;1" dur="1.6s" repeatCount="indefinite"/>
+  </rect>
+
+  <text x="88" y="72" font-family="ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace" font-size="52" font-weight="bold" fill="#e8f1f8">sn-architect</text>
+
+  <rect x="60" y="96" width="360" height="4" rx="2" fill="url(#accent)"/>
+
+  <text x="60" y="140" font-family="ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace" font-size="22" fill="#9fb8cc">Architecture-first ServiceNow skills for AI coding agents</text>
+
+  <text x="60" y="182" font-family="ui-monospace, 'Cascadia Code', Consolas, 'Courier New', monospace" font-size="15" fill="#7d97ad">OOTB-first  ·  6 consistency checks  ·  IRE enforcement  ·  verified CLI  ·  MIT</text>
+</svg>

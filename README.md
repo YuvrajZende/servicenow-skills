@@ -1,6 +1,30 @@
+<div align="center">
+
+<img src="assets/banner.svg" alt="sn-architect — architecture-first ServiceNow skills for AI coding agents" width="100%">
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Format](https://img.shields.io/badge/format-agentskills.io-blue)](https://agentskills.io)
+[![References](https://img.shields.io/badge/references-17-blueviolet)](#how-it-works)
+[![Consistency checks](https://img.shields.io/badge/consistency_checks-6-orange)](sn-architect/references/08-consistency-checks.md)
+[![Tested](https://img.shields.io/badge/behavior_tested-RED%2FGREEN%2C_n%3D1-yellow)](#test-evidence)
+
+</div>
+
 # sn-architect — architecture-first ServiceNow skills for AI coding agents
 
 `sn-architect` is a skill that turns your AI coding agent (Claude Code, Cursor, Antigravity, and other agent runtimes) into a ServiceNow **enterprise architect**. Instead of generating tables, business rules, and scripts on demand, the agent first designs the solution — evaluates what the platform already provides, models the schema, places logic, wires security, and validates the design against 6 mandatory consistency checks — **before** any code or configuration is generated.
+
+```mermaid
+flowchart LR
+    A["Business requirement"] --> B{"SKILL.md<br/>thin router"}
+    B -- "full mode" --> C["6-step reasoning loop"]
+    B -- "surgical mode" --> D["targeted reference only"]
+    C --> E["On-demand references<br/>00–16"]
+    D --> E
+    E --> F["6 consistency checks<br/>incl. IRE + AI entitlement gates"]
+    F --> G["Architecture spec<br/>+ conditional appendices"]
+    G --> H["Now: code generation"]
+```
 
 ---
 
@@ -21,6 +45,9 @@ These are not model-knowledge problems — they are **workflow** problems. Agent
 
 The skill is a **thin router, not a documentation dump**. `SKILL.md` (~100 lines) carries hard rules, a surgical-vs-full-mode decision, a 6-step reasoning loop, and a routing table. Seventeen modular reference files load **on demand**, only when a concern becomes active:
 
+<details>
+<summary><strong>All 17 reference files</strong> (click to expand)</summary>
+
 | Reference | Concern |
 |-----------|---------|
 | `00-ootb-first.md` | Step 0 — never rebuild what the platform ships; OOTB evaluation protocol |
@@ -40,6 +67,8 @@ The skill is a **thin router, not a documentation dump**. `SKILL.md` (~100 lines
 | `14-cmdb.md` | IRE enforcement, CSDM, data precedence, CMDB health |
 | `15-approvals-assignment.md` | Approval engine, routing, assignment, on-call |
 | `16-reporting-analytics.md` | Reports, database views, Performance Analytics |
+
+</details>
 
 Every reference follows the same discipline: **decision matrices instead of essays**, hard rules with falsification tests ("The test: ..."), and anti-pattern tables. Nothing is written from memory — factual claims (CLI commands, API signatures, table names) were verified against official ServiceNow documentation, and the skill itself carries the durable rule: *verify every CLI command against `now-sdk --help` before emitting it.*
 
