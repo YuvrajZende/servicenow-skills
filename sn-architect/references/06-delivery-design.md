@@ -52,6 +52,7 @@ Verified `@servicenow/sdk` commands (exactly one of `auth --add|--delete|--use|-
 | `now-sdk cicd install\|publish\|rollback` | Application Repository operations via `sn_cicd`. |
 | `now-sdk cicd test run\|watch\|result` | Runs ATF tests against the instance (there is no top-level `test` command). |
 | `now-sdk query <table> -q '<encoded query>' -o json` | Queries instance records via the Table API. |
+| `now-sdk explain <topic>` | (SDK ≥ 4.6.0) Outputs versioned Fluent schema definitions, properties, and usage rules directly into CLI/agent context. |
 
 ---
 

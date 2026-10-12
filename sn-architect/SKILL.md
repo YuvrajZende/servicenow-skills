@@ -15,7 +15,7 @@ Architect end-to-end ServiceNow solutions from plain-language requirements **by 
 ## Core Guidelines (Platform Heuristics)
 
 ### 1. Don't Rebuild ServiceNow
-**Check OOTB first. Configure before customizing. Never extend `sys_user`.**
+**Check OOTB first. Configure before customizing. Custom apps must never extend `sys_user`.**
 - The most expensive mistake in ServiceNow is custom-building what the platform already ships.
 - Before proposing any custom table, evaluate base tables (`task`, `interaction`, `planned_task`, `cmdb_ci`), Store apps, and pre-built spoke actions.
 - Avoid speculative custom tables if adding 2–3 fields to an existing table solves the business problem.
@@ -95,7 +95,7 @@ Load these modular references on demand as each concern becomes active:
 | **Security & ACLs** | Writing explicit CRUD ACLs, evaluation order, scoping roles, RCA, guest hardening | [`references/05-security-design.md`](references/05-security-design.md) |
 | **Notifications & Events** | Email/SMS/push/chat notifications, event queue design, inbound email actions, notification matrix | [`references/11-notifications.md`](references/11-notifications.md) |
 | **Approvals & Routing** | Approval engine vs flow approvals, delegation, assignment rules, skills-based routing, on-call | [`references/15-approvals-assignment.md`](references/15-approvals-assignment.md) |
-| **SLA & Commitments** | SLA/OLA/UC definitions, pause/stop conditions, timezone strategy, breach actions | [`references/10-requirements.md`](references/10-requirements.md) |
+| **SLA & Commitments** | SLA/OLA/UC definitions, pause/stop conditions, timezone strategy, breach actions | [`references/10-sla.md`](references/10-sla.md) |
 | **CMDB & CSDM** | IRE-based CI loading, CSDM domains, data precedence, CMDB health gates | [`references/14-cmdb.md`](references/14-cmdb.md) |
 | **AI & Agents** | AI Agents, Now Assist, Virtual Agent, Predictive Intelligence, AI Search, entitlement checks | [`references/13-ai-automation.md`](references/13-ai-automation.md) |
 | **Knowledge** | Knowledge bases, article lifecycle, KCS, search surfaces | [`references/12-knowledge.md`](references/12-knowledge.md) |

@@ -44,7 +44,9 @@ AI Agents are defined as: an agent (persona + instructions) with bound tools, in
 
 1. **Capabilities:** classification (predict a field value), similarity (find related records), regression (predict a number), clustering (group records). Choose per business question, not per fashion.
 2. **Training data is the design constraint:** solutions train on historical record data (`ml_solution`); dirty or sparse training data produces confidently wrong predictions. Design the data-quality gate **before** the model.
-3. **Environment & training data dependencies:** Predictive Intelligence models train against historical record volume (typically 300+ records per category). In multi-instance pipelines (Dev ➔ Test ➔ Prod), sub-production environments frequently lack the data volume or variety needed for quality training; the architecture must explicitly document where models are trained and how accuracy is validated before production activation.
+3. **Environment & training data dependencies:** Predictive Intelligence models train against historical record volume.
+   > ⚠️ Unverified: A figure of 300+ historical records per category is widely cited across ServiceNow practitioner forums and implementation guides for acceptable classification accuracy, but official minimum thresholds vary by solution type and class balance.
+   In multi-instance pipelines (Dev ➔ Test ➔ Prod), sub-production environments frequently lack the data volume or variety needed for quality training; the architecture must explicitly document where models are trained and how accuracy is validated before production activation.
 4. **PI outputs augment, humans decide:** predicted category/similarity are suggestions into the workflow, never silent overrides of fulfiller judgment without an explicit automation decision.
 
 ---

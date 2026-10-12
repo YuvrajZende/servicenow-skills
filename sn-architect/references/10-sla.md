@@ -1,4 +1,4 @@
-# SLA & Service Commitment Architecture (`10-requirements.md`)
+# SLA & Service Commitment Architecture (`10-sla.md`)
 
 > Guidance for designing Service Level Agreements (SLAs), OLAs, and measurement models on `task`-extending tables — before promising delivery timelines in an architecture.
 

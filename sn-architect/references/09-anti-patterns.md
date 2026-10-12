@@ -14,16 +14,18 @@ When looping through records and storing `gr.field_name` into an array, every el
 ### Code Comparison
 
 ```javascript
-// ❌ WRONG: Pushes object references; all array elements end up with the LAST record's value!
+// ❌ WRONG: Pushes GlideElement object references; all array elements end up referencing the cursor's LAST record!
 var userList = [];
 var gr = new GlideRecord('sys_user');
 gr.addActiveQuery();
-gr.setLimit(5);
+gr.setLimit(3);
 gr.query();
 while (gr.next()) {
-    userList.push(gr.user_name); // Trapped! Pushing GlideElement reference
+    userList.push(gr.user_name); // Trapped! Pushing live GlideElement reference
 }
-// Result: userList = [last_user, last_user, last_user, last_user, last_user]
+// Tested on ServiceNow (Scripts - Background):
+// gs.info(JSON.stringify(userList)); -> ["user_3", "user_3", "user_3"]
+// Every entry holds a reference to the same GlideElement instance updated by gr.next()!
 
 // ✅ RIGHT: Returns a primitive JavaScript string
 var userList = [];
@@ -129,7 +131,7 @@ Result: EVERY logged-in user in the company can read all loan requests!
 ✅ RIGHT: Explicit Role-Gated ACL Configuration
 Table: x_acme_loan_request
 Operation: read
-Roles: [x_acme_loan_fulfiller, x_acme_loan_admin]
+Roles: [x_acme_loan.fulfiller, x_acme_loan.admin]
 Condition: [None or State-based]
 Script: answer = true;
 Result: Only authorized fulfillers and admins can read loan records.

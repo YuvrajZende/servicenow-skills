@@ -60,7 +60,7 @@ The skill is a **thin router, not a documentation dump**. `SKILL.md` (~100 lines
 | `07-architecture-doc-template.md` | The specification template with conditional appendices (SLA, notifications, CMDB, AI) |
 | `08-consistency-checks.md` | The 6-check validation gate (orphans, ACL completeness, transaction integrity, IRE enforcement, AI entitlement, ...) |
 | `09-anti-patterns.md` | `getValue()` GlideElement trap, `current.update()` recursion, client GlideRecord, timezone bugs, ... |
-| `10-requirements.md` | SLA / OLA / UC design |
+| `10-sla.md` | SLA / OLA / UC design |
 | `11-notifications.md` | Notification records, event pipeline, inbound email |
 | `12-knowledge.md` | Knowledge bases, article lifecycle, KCS |
 | `13-ai-automation.md` | AI Agents, Now Assist, Virtual Agent, Predictive Intelligence, AI Search |
@@ -90,7 +90,20 @@ For small tasks ("fix this ACL", "add one business rule"), the skill runs in **s
 
 ## Installation
 
-### Claude Code (personal — all projects)
+Install `sn-architect` by cloning or linking the `sn-architect/` directory into your coding agent's skill path.
+
+### Supported Runtime Paths
+
+| Runtime | Skill Installation Path | Tested Status | Reference Documentation |
+|---|---|:---:|---|
+| **Claude Code** (user global) | `~/.claude/skills/sn-architect` | Tested | [Claude Code Reference](https://docs.anthropic.com) |
+| **Claude Code** (project local) | `.claude/skills/sn-architect` | Tested | [Claude Code Reference](https://docs.anthropic.com) |
+| **Antigravity IDE** | `.agents/skills/sn-architect` (workspace) or `~/.gemini/config/skills/` | Tested | Antigravity Skills System |
+| **Cursor** | `.cursor/skills/sn-architect` | Manual copy | [Cursor Documentation](https://docs.cursor.com) |
+| **GitHub Copilot** | `.github/skills/sn-architect` or `~/.copilot/skills/sn-architect` | Per SDK ref | [ServiceNow SDK Skills](https://servicenow.github.io/sdk) |
+| **ServiceNow Build Agent (Now IDE)** | *Not directly compatible* | Incompatible | Uses internal Studio package format; requires manual conversion. |
+
+### Manual Installation (Claude Code)
 
 ```bash
 git clone https://github.com/YuvrajZende/SERVICENOW-SKILLS.git
@@ -98,37 +111,15 @@ mkdir -p ~/.claude/skills
 cp -r SERVICENOW-SKILLS/sn-architect ~/.claude/skills/sn-architect
 ```
 
-Verify with `/skills` inside Claude Code, or by asking: *"Design a ServiceNow app for tracking building access passes"* — the agent should start with the OOTB evaluation, not with a `CREATE TABLE`.
+Verify with `/skills` inside Claude Code, or by asking: *"Design a ServiceNow app for tracking building access passes"* — the agent should start with the OOTB evaluation, not with code.
 
-### Via skills.sh (recommended)
+### Installation via skills.sh
 
 ```bash
 npx skills add YuvrajZende/SERVICENOW-SKILLS
 ```
 
-### Claude Code (single project)
-
-```bash
-mkdir -p .claude/skills
-cp -r /path/to/SERVICENOW-SKILLS/sn-architect .claude/skills/sn-architect
-```
-
-### Other agent runtimes (Codex, Gemini CLI, Copilot CLI)
-
-These runtimes recognize the cross-runtime alias directory:
-
-```bash
-mkdir -p ~/.agents/skills
-cp -r /path/to/SERVICENOW-SKILLS/sn-architect ~/.agents/skills/sn-architect
-```
-
-### Cursor / Antigravity / other tools
-
-Copy the `sn-architect/` folder into the skills (or rules/prompts) directory your tool loads, following its own convention. The skill uses only the standard [agentskills.io](https://agentskills.io) format — `SKILL.md` with `name`/`description` frontmatter plus markdown references — so any runtime that supports the format can load it.
-
-### Keeping it current
-
-The skill self-guards against CLI drift, but the files themselves were verified against specific ServiceNow SDK and release documentation (see *Provenance*). Re-pull the repo after platform releases, or pin your copy and diff before upgrading.
+> **Note on relative paths:** `SKILL.md` routes on demand to `references/*.md` located relatively beside it. When copying or moving `sn-architect`, keep the `references/` directory adjacent to `SKILL.md`.
 
 ---
 
@@ -152,9 +143,20 @@ The skill self-guards against CLI drift, but the files themselves were verified 
 
 ## Provenance & accuracy
 
-- CLI commands verified against the official ServiceNow SDK CLI reference (servicenow.github.io/sdk/cli) — `install`, not `deploy`; `download`/`transform`, not `fetch`; `cicd test`, not top-level `test`.
-- AI/CMDB identifiers verified against official API documentation (`sn_aia_agent`, `sys_cb_topic`/`sys_cs_topic`, `sn_cmdb.IdentificationEngine`, ...).
-- Security claims (`glide.sm.default_mode`, empty-ACL behavior, ACL evaluation order incl. `parent_table.*`) verified against ServiceNow security documentation.
+Status: **Beta (v1.1.0)**. Written against ServiceNow Xanadu product documentation and `@servicenow/sdk` (≥ 4.6.0). Re-check against your instance release family.
+
+- **Spot-checked against official docs / SDK:**
+  - `@servicenow/sdk` CLI commands (`init`, `auth`, `build`, `install`, `download`, `transform`, `dependencies`, `cicd`, `explain`) verified against `servicenow.github.io/sdk/cli`.
+  - Scoped role naming standard (`<scope>.<role>`) verified against official `ServiceNow/sdk-examples` (`acl-sample`).
+  - ACL evaluation hierarchy (record ➔ field wildcard `.*` ➔ explicit field) and empty-ACL security verified against ServiceNow security documentation.
+  - Identification and Reconciliation Engine (IRE) API signatures (`sn_cmdb.IdentificationEngine`) verified against ServiceNow CMDB documentation.
+  - GlideElement reference retention behavior in `GlideRecord` loops verified empirically on ServiceNow instance (Scripts - Background).
+  - Table, Column, and BusinessRule Fluent builder signatures verified against `ServiceNow/sdk-examples`.
+- **Not yet verified on live instance:**
+  - Full end-to-end deployment of generated Fluent `.now.ts` projects through an automated enterprise CI/CD pipeline (`now-sdk cicd install`).
+  - Automated execution of generated ATF test builders against an active test runner.
+
+Found something wrong? [Open an issue](https://github.com/YuvrajZende/SERVICENOW-SKILLS/issues) with the official documentation link.
 
 ## Test evidence
 
@@ -189,12 +191,14 @@ More scenarios welcome — [open an issue](https://github.com/YuvrajZende/SERVIC
 
 `sn-architect` focuses specifically on **system architecture and design governance** before code generation. For downstream implementation and task-level execution, it pairs naturally with:
 
+- **[ServiceNow SDK Agent Skill (`@servicenow/sdk`)](https://servicenow.github.io/sdk):** The official ServiceNow vendor agent skill for Claude Code / Cursor, providing live `explain` commands, SDK project scaffolding, and CLI execution.
 - **[ServiceNow SDK Samples (`ServiceNow/sdk-examples`)](https://github.com/ServiceNow/sdk-examples):** The official ServiceNow repository for runnable Fluent (`.now.ts`) declarative metadata examples across tables, ACLs, and business rules.
 - **[Happy Platform Skills (`Happy-Technologies-LLC/happy-platform-skills`)](https://github.com/Happy-Technologies-LLC/happy-platform-skills):** A library of 180+ task-level procedural skills covering granular admin and operational tasks across ITSM, CSM, and HRSD.
 
 | Layer | Tool | Role |
 |---|---|---|
 | **System Architecture & Governance** | `sn-architect` (this repo) | OOTB evaluation, data model, sync/async logic, ACL package, IRE & AI gates, build order |
+| **Vendor SDK Agent Skill** | [`@servicenow/sdk`](https://servicenow.github.io/sdk) | Official SDK CLI agent commands (`explain`, build, install) |
 | **Reference Fluent Code** | [`ServiceNow/sdk-examples`](https://github.com/ServiceNow/sdk-examples) | Official TypeScript Fluent patterns for SDK projects |
 | **Task & Operational Execution** | [`happy-platform-skills`](https://github.com/Happy-Technologies-LLC/happy-platform-skills) | Granular procedural recipes for individual platform workflows |
 
@@ -204,4 +208,7 @@ The highest-value contributions are: (1) failing test scenarios — requirements
 
 ## License & disclaimer
 
-MIT. This is an unofficial community project and is **not affiliated with, endorsed by, or sponsored by ServiceNow**. "ServiceNow" is a trademark of ServiceNow, Inc.; used here descriptively to indicate compatibility. Always validate generated architectures against your instance's release, licensing, and security posture — the skill is designed to tell the agent the same thing.
+MIT. This is an unofficial community project and is **not affiliated with, endorsed by, or sponsored by ServiceNow**. "ServiceNow" is a trademark of ServiceNow, Inc.; used here descriptively to indicate compatibility.
+
+- **Contains no ServiceNow exam or training course content:** `sn-architect` is strictly an architecture and engineering skill based on public documentation and APIs. It contains no certification exam questions, answers, or training courseware.
+- Always validate generated architectures against your instance's release, licensing, and security posture — the skill is designed to tell the agent the same thing.

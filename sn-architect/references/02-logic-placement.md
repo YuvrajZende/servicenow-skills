@@ -34,11 +34,14 @@ User clicks Save
 [Before Business Rules] ── (Synchronous: Can modify current.*, can setAbortAction)
        │
        ▼
-[Database Commit]
+[Database Write] ──────── (Record written to database buffer, not yet committed)
        │
-       ├──► [After Business Rules] ── (Synchronous: Runs in session thread after commit)
+       ├──► [After Business Rules] ── (Synchronous: Runs in session thread after write, inside the SAME transaction before commit)
        │
-       └──► [Async Business Rules] ── (Asynchronous: Queued into sys_trigger / scheduler)
+       ▼
+[Database Commit] ─────── (Transaction committed to database)
+       │
+       └──► [Async Business Rules] ── (Asynchronous: Queued into sys_trigger / scheduler after commit)
 ```
 
 ### Flow Designer Execution Nuance (Not Strictly Async)

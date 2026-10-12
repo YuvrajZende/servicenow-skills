@@ -162,7 +162,7 @@ export function validateLoanSubmission(current, previous) {
 2. **Hand-writing what the compiler verifies:** run `now-sdk build` immediately after authoring; build errors are the cheapest syntax checker.
 3. **Mixing concerns:** Fluent files declare *metadata*; business logic lives in `/server` modules — a `.now.ts` file containing multi-hundred-line scripts is a design smell (see `02-logic-placement.md` Script Include rule).
 4. **Editing `generated/` output:** files under `src/fluent/generated/` are compiler-managed; hand edits are lost on the next build.
-5. **Skipping `localOrExisting` decisions:** determine per record whether the definition creates new metadata or binds to existing records — an accidental `'New'` duplicates OOTB objects (Check 6 territory).
+5. **Misunderstanding `localOrExisting` in ACLs:** in `Acl()`, `localOrExisting: 'Local'` specifies an inline security attribute condition, while `'Existing'` references a shared platform security attribute. To extend existing platform tables without duplicating them, use `augments: '<table_name>'` on `Table()`, never declare a duplicate table with `name: '<existing_table>'` (Check 6 territory).
 
 ---
 

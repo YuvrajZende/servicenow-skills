@@ -65,4 +65,4 @@ Every architecture document produced by `sn-architect` must explicitly contain a
 ## Authoritative Sources
 - [ServiceNow Documentation: Table extension and the data model](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/managing-data/concept/c_DataDictionaryTables.html)
 - [ServiceNow Documentation: Customer Service Management tables](https://docs.servicenow.com/bundle/xanadu-customer-service-management/page/product/customer-service-management/reference/r_CustomerServiceTables.html)
-- [ServiceNow Community: Common Service Data Model (CSDM) Overview](https://www.servicenow.com/community/developer-articles/common-service-data-model-csdm-overview/ba-p/2275468)
+- [ServiceNow Documentation: Common Service Data Model (CSDM)](https://docs.servicenow.com/bundle/xanadu-it-service-management/page/product/configuration-management/concept/common-service-data-model.html)

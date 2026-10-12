@@ -109,7 +109,7 @@ Unauthenticated users operate under the platform **Guest user session** (look up
 ## 5. Role Design & Application Scope Security
 
 ### Role Architecture Standards
-- **Naming Standard:** `x_<vendor>_<app>_<role_name>` (e.g., `x_acme_loan_admin`, `x_acme_loan_fulfiller`, `x_acme_loan_user`).
+- **Naming Standard:** `x_<vendor>_<app>.<role_name>` (e.g., `x_acme_loan.admin`, `x_acme_loan.fulfiller`, `x_acme_loan.user` — dot separator after scope prefix per official ServiceNow SDK patterns).
 - **Principle of Least Privilege:** Create distinct roles for Read-Only vs Fulfill vs Admin.
 - **Group Assignment:** Assign roles exclusively to Groups (`sys_user_group`), never directly to individual user records.
 

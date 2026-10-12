@@ -4,7 +4,7 @@
 
 ---
 
-```markdown
+````markdown
 # Application Architecture Specification: [Application Name]
 
 ## 1. Executive Summary & Metadata
@@ -46,13 +46,13 @@
 ---
 
 ## 4A. Service Commitments — SLA Matrix *(conditional)*
-> **Render only if** the design includes work items on `task`-extending tables. Otherwise omit this section entirely. Source standard: `references/10-requirements.md`.
+> **Render only if** the design includes work items on `task`-extending tables. Otherwise omit this section entirely. Source standard: `references/10-sla.md`.
 
 | SLA Name | Type (SLA/OLA/UC) | Table | Target | Schedule / Timezone | Start | Pause (with unpause path) | Stop | Breach Action |
 |----------|-------------------|-------|--------|---------------------|-------|---------------------------|------|---------------|
 | [Name] | SLA | `x_[vendor]_[app]_[table]` | [duration / schedule-based] | [schedule + TZ decision] | [condition] | [pause ⇄ unpause pair] | [condition] | [notify / escalate] |
 
-- **Timezone decision:** [whose clock runs the commitment — documented per `10-requirements.md` §2]
+- **Timezone decision:** [whose clock runs the commitment — documented per `10-sla.md` §2]
 - **Volume impact:** [tasks/day × SLAs per task → `task_sla` growth → archiving decision]
 
 ---
@@ -178,18 +178,18 @@ graph TD
 *Default Deny Verification: Instance `glide.sm.default_mode` must be verified as `deny`.*
 
 ### Scoped Roles
-- `x_[vendor]_[app]_admin`: Full configuration and delete privileges.
-- `x_[vendor]_[app]_fulfiller`: Read, write, and state management.
-- `x_[vendor]_[app]_user`: Read-only access to own submitted records.
+- `x_[vendor]_[app].admin`: Full configuration and delete privileges.
+- `x_[vendor]_[app].fulfiller`: Read, write, and state management.
+- `x_[vendor]_[app].user`: Read-only access to own submitted records.
 
 ### Mandatory CRUD ACLs
 | Table | Operation | Role Required | Condition | Script |
 |-------|-----------|---------------|-----------|--------|
-| `x_[vendor]_[app]_[table]` | Read | `_user`, `_fulfiller` | `opened_by=javascript:gs.getUserID()` (for users) | — |
-| `x_[vendor]_[app]_[table].*` | Read | `_user`, `_fulfiller` | — | — |
-| `x_[vendor]_[app]_[table]` | Create | `_user` | — | — |
-| `x_[vendor]_[app]_[table]` | Write | `_fulfiller` | `state!=closed` | — |
-| `x_[vendor]_[app]_[table]` | Delete | `_admin` | — | — |
+| `x_[vendor]_[app]_[table]` | Read | `.user`, `.fulfiller` | `opened_by=javascript:gs.getUserID()` (for users) | — |
+| `x_[vendor]_[app]_[table].*` | Read | `.user`, `.fulfiller` | — | — |
+| `x_[vendor]_[app]_[table]` | Create | `.user` | — | — |
+| `x_[vendor]_[app]_[table]` | Write | `.fulfiller` | `state!=closed` | — |
+| `x_[vendor]_[app]_[table]` | Delete | `.admin` | — | — |
 
 ---
 
@@ -198,7 +198,7 @@ Strict chronological implementation sequence enforcing dependency integrity:
 
 1. **Phase 1: Foundation & Security**
    - Create Scoped Application & Git repository linkage.
-   - Define custom roles (`_admin`, `_fulfiller`, `_user`).
+   - Define custom roles (`.admin`, `.fulfiller`, `.user`).
    - Create system properties (`sys_properties`) for dynamic configuration.
 2. **Phase 2: Schema & Dictionary**
    - Create custom tables with singular technical names and plural labels.
@@ -237,7 +237,7 @@ Strict chronological implementation sequence enforcing dependency integrity:
 |---|---------------------|-------------|------------------------------------| 
 | 1 | [e.g., Anticipated record creation volume per day] | Data Model / Performance | Verify with business whether archiving rules are needed. |
 | 2 | [e.g., External API rate limits] | Integration Architecture | Confirm provider rate limits to tune retry policies. |
-```
+````
 
 ---
 

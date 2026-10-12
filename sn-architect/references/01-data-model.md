@@ -45,7 +45,7 @@ Inheriting from `task` brings enormous built-in power but also carries table wei
 | `task` | Extensible for work items | Avoid deep hierarchies (e.g., `task` ➔ `incident` ➔ custom). Max depth recommended is 1 level below `task`. |
 | `cmdb_ci` | Extensible for Configuration Items | Always extend via **CI Class Manager**. Follow Common Service Data Model (CSDM) standards. |
 | `interaction` | Extensible or reusable for intake | Standard landing table for omnichannel chat, phone, and walk-up intake before converting to a task. |
-| `sys_user` | **NEVER EXTEND** | `sys_user` is a core system table. Extending it breaks authentication, licensing, and reference integrity. To add user attributes, add custom fields or create a related 1:1 `user_profile` table. |
+| `sys_user` | **Avoid Extending in Custom Apps** | While platform suites extend it (e.g., CSM `customer_contact`), custom scoped apps must avoid extending `sys_user`. Doing so complicates IdP provisioning, degrades user picker search performance, and creates licensing ambiguity. To add user attributes, reference `sys_user` from a 1:1 profile table. |
 | `core_company` | Reusable master data table | Store vendors, customers, manufacturers. Do not create separate "vendor" or "client" tables. |
 
 ---
@@ -95,10 +95,10 @@ The data model is not done when the schema is drawn — design how data ages:
 
 | Concern | Mechanism | Design Standard |
 |---------|-----------|-----------------|
-| **Record volume growth** | Data archiving / retention policies | High-volume tables (see `10-requirements.md` for `task_sla` volume math) need an archiving decision at design time, not after the first performance incident. |
+| **Record volume growth** | Data archiving / retention policies | High-volume tables (see `10-sla.md` for `task_sla` volume math) need an archiving decision at design time, not after the first performance incident. |
 | **History & audit** | Platform audit tables (`sys_audit`) | Audit is controlled per table/field; high-volume tables may need audit exclusions — decide deliberately, and never query `sys_audit` directly in scripts (see `09-anti-patterns.md`). |
 | **Multilingual data** | Translated fields | If personas work in multiple languages, field labels *and* data (choices, text) need translated-field design up front — retrofitting is painful. |
-| **Date/time correctness** | `GlideDateTime` | All server date math in UTC-backed Glide APIs; never naive `new Date()` (see `09-anti-patterns.md`). Document the timezone strategy alongside SLAs (`10-requirements.md`). |
+| **Date/time correctness** | `GlideDateTime` | All server date math in UTC-backed Glide APIs; never naive `new Date()` (see `09-anti-patterns.md`). Document the timezone strategy alongside SLAs (`10-sla.md`). |
 | **Cross-table reporting** | Database views | Pre-modeled joins for reporting (see `16-reporting-analytics.md`) — designed as schema objects with owners. |
 
 ---

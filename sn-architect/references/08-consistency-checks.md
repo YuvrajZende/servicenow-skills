@@ -49,6 +49,7 @@ Before presenting an architecture specification, the architect must validate the
 - **Rule 4.3:** Custom applications must NEVER extend `sys_user` (store application-specific user data in a profile table referencing `sys_user`).
 - **Rule 4.4:** Reference fields must target valid, existing tables and must be flagged for indexing.
 - **Rule 4.5:** If a relationship requires querying, filtering, or reporting joins, it must use an M2M junction table, not a `glide_list`.
+- **Rule 4.6:** Scoped custom roles must follow the platform naming standard: `x_<vendor>_<app>.<role_name>` (dot notation separating scope prefix and role name, e.g., `x_acme_loan.admin`).
 
 ---
 
