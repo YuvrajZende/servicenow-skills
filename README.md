@@ -148,7 +148,7 @@ Status: **Beta (v1.1.0)**. Written against ServiceNow Xanadu product documentati
 - **Spot-checked against official docs / SDK:**
   - `@servicenow/sdk` CLI commands (`init`, `auth`, `build`, `install`, `download`, `transform`, `dependencies`, `cicd`, `explain`) verified against `servicenow.github.io/sdk/cli`.
   - Scoped role naming standard (`<scope>.<role>`) verified against official `ServiceNow/sdk-examples` (`acl-sample`).
-  - ACL evaluation hierarchy (record ➔ field wildcard `.*` ➔ explicit field) and empty-ACL security verified against ServiceNow security documentation.
+  - ACL evaluation hierarchy (most-specific first: table.field ➔ parent_table.field ➔ *.field ➔ table.* ➔ parent_table.* ➔ *.*) and empty-ACL security verified against ServiceNow security documentation.
   - Identification and Reconciliation Engine (IRE) API signatures (`sn_cmdb.IdentificationEngine`) verified against ServiceNow CMDB documentation.
   - GlideElement reference retention behavior in `GlideRecord` loops verified empirically on ServiceNow instance (Scripts - Background).
   - Table, Column, and BusinessRule Fluent builder signatures verified against `ServiceNow/sdk-examples`.
