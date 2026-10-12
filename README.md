@@ -106,9 +106,9 @@ Install `sn-architect` by cloning or linking the `sn-architect/` directory into 
 ### Manual Installation (Claude Code)
 
 ```bash
-git clone https://github.com/YuvrajZende/SERVICENOW-SKILLS.git
+git clone https://github.com/YuvrajZende/servicenow-skills.git
 mkdir -p ~/.claude/skills
-cp -r SERVICENOW-SKILLS/sn-architect ~/.claude/skills/sn-architect
+cp -r servicenow-skills/sn-architect ~/.claude/skills/sn-architect
 ```
 
 Verify with `/skills` inside Claude Code, or by asking: *"Design a ServiceNow app for tracking building access passes"* — the agent should start with the OOTB evaluation, not with code.
@@ -116,7 +116,7 @@ Verify with `/skills` inside Claude Code, or by asking: *"Design a ServiceNow ap
 ### Installation via skills.sh
 
 ```bash
-npx skills add YuvrajZende/SERVICENOW-SKILLS
+npx skills add YuvrajZende/servicenow-skills
 ```
 
 > **Note on relative paths:** `SKILL.md` routes on demand to `references/*.md` located relatively beside it. When copying or moving `sn-architect`, keep the `references/` directory adjacent to `SKILL.md`.
@@ -156,7 +156,7 @@ Status: **Beta (v1.1.0)**. Written against ServiceNow Xanadu product documentati
   - Full end-to-end deployment of generated Fluent `.now.ts` projects through an automated enterprise CI/CD pipeline (`now-sdk cicd install`).
   - Automated execution of generated ATF test builders against an active test runner.
 
-Found something wrong? [Open an issue](https://github.com/YuvrajZende/SERVICENOW-SKILLS/issues) with the official documentation link.
+Found something wrong? [Open an issue](https://github.com/YuvrajZende/servicenow-skills/issues) with the official documentation link.
 
 ## Test evidence
 
@@ -185,7 +185,7 @@ To validate the skill across other architectural patterns, run these test cases 
 3. **AI Agent Governance:** *"Design a Now Assist GenAI agent in Customer Service to auto-triage inbound cases and assign priorities."*
    - *Target behavior:* Enforces Rule 6.5 entitlement check gate, binds minimal scoped tools instead of raw script execution, and requires a human-in-the-loop review point for consequential state mutations.
 
-More scenarios welcome — [open an issue](https://github.com/YuvrajZende/SERVICENOW-SKILLS/issues) with your prompt and architecture run if the skill routes wrong or misses a check.
+More scenarios welcome — [open an issue](https://github.com/YuvrajZende/servicenow-skills/issues) with your prompt and architecture run if the skill routes wrong or misses a check.
 
 ## Ecosystem & complementary tools
 

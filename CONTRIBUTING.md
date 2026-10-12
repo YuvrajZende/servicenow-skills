@@ -50,7 +50,7 @@ Edits must be retrieval-tested: with only `SKILL.md` in context, a fresh AI codi
 
 ## 5. Submitting Issues & Pull Requests
 
-Open issues or pull requests on GitHub at [YuvrajZende/SERVICENOW-SKILLS/issues](https://github.com/YuvrajZende/SERVICENOW-SKILLS/issues). Please describe the platform release tested and link relevant documentation.
+Open issues or pull requests on GitHub at [YuvrajZende/servicenow-skills/issues](https://github.com/YuvrajZende/servicenow-skills/issues). Please describe the platform release tested and link relevant documentation.
 
 ## License
 
