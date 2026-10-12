@@ -102,3 +102,10 @@ Many architects mistakenly assume Flow Designer is always asynchronous. In reali
 - **Decision tables** belong in flows where mapping logic is data-administered (routing, prioritization) rather than scripted.
 
 **Caching:** scripts caching data in `gs.getProperty`-backed properties or custom caches must consider multi-node instances — cache invalidation across nodes is not instant; design for stale-window tolerance instead of assuming instant consistency.
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Business Rules](https://docs.servicenow.com/bundle/xanadu-application-development/page/script/business-rules/concept/c_BusinessRules.html)
+- [ServiceNow Documentation: Flow Designer Architecture](https://docs.servicenow.com/bundle/xanadu-build-workflows/page/administer/flow-designer/concept/flow-designer.html)
+- [ServiceNow Developer Guide: GlideAjax API](https://developer.servicenow.com/dev.do#!/reference/api/latest/client/c_GlideAjaxAPI)

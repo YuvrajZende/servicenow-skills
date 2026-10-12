@@ -27,6 +27,8 @@ my-app/
 ```
 
 > **Note:** This tree represents the local filesystem project structure managed via the ServiceNow SDK and Git. Inside the ServiceNow instance database, all application components are stored as records in `sys_metadata` and table-specific metadata tables.
+> 
+> **Canonical Implementation Reference:** For official, runnable Fluent code samples across tables, ACLs, business rules, and script includes, refer to [ServiceNow/sdk-examples](https://github.com/ServiceNow/sdk-examples).
 
 ---
 
@@ -134,3 +136,11 @@ Delivery is not done at first deploy — the app must survive platform upgrades:
 3. **Environment strategy:** document the instance landscape (Dev / Test / Prod, cloning cadence, and refresh policy). Clones wipe test data and local-only settings; the delivery plan must state what each environment expects.
 4. **Platform release pinning:** the SDK/CLI evolves between releases (see the verify-CLI rule in §2) and metadata compatibility is release-bound — record the target platform release in the architecture document and re-verify tooling on release upgrades.
 5. **Post-upgrade verification:** ATF suites (§5) double as upgrade regression tests — run the full suite after every platform upgrade, not just before deploys.
+
+---
+
+## Authoritative Sources
+- [ServiceNow SDK CLI Reference](https://servicenow.github.io/sdk/cli)
+- [Official ServiceNow SDK Samples & Fluent Reference Implementations](https://github.com/ServiceNow/sdk-examples)
+- [ServiceNow Documentation: Automated Test Framework (ATF)](https://docs.servicenow.com/bundle/xanadu-application-development/page/administer/auto-test-framework/concept/c_ATF.html)
+- [ServiceNow Documentation: Instance Scan](https://docs.servicenow.com/bundle/xanadu-application-development/page/administer/instance-scan/concept/instance-scan.html)

@@ -80,9 +80,15 @@ An architecture that loads the CMDB owns its health:
 
 ## 7. Output in the Architecture Document
 
-Every architecture document touching the CMDB must include:
+Every architecture document touching the CMDB must include a **CMDB Ingestion & IRE Precedence Table** (template §7A):
 
 - **Load path table:** source → mechanism (IRE pattern) → target classes → identification criteria available → precedence position.
 - **Plugin/entitlement verification:** `com.snc.cmdb.scoped` (scoped IRE), Discovery, SG Connectors — each with a checked/verified box.
 - **CSDM domain mapping:** which classes are created/modified, via CI Class Manager, mapped to CSDM domains.
 - **Health gate:** the measurable CMDB health criteria for go-live acceptance.
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Identification and Reconciliation Engine (IRE)](https://docs.servicenow.com/bundle/xanadu-servicenow-platform/page/product/configuration-management/concept/identification-and-reconciliation-engine.html)
+- [ServiceNow Documentation: CMDB Identification Rules](https://docs.servicenow.com/bundle/xanadu-servicenow-platform/page/product/configuration-management/concept/ci-identification-rules.html)

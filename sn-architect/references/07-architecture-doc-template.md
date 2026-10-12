@@ -34,7 +34,7 @@
 ## 4. Data Model & Relationships
 ### Tables
 | Technical Table Name | Display Label | Extends | Purpose |
-|----------------------|---------------|---------|---------|
+|----------------------|---------------|---------|---------| 
 | `x_[vendor]_[app]_[name]` | [Plural Label] | `task` or None | [Purpose] |
 
 ### Key Fields & Relationships
@@ -77,7 +77,7 @@ graph TD
 
 ## 6. Logic Placement & Execution Model
 | Component Name | Type | Trigger / Timing | Execution Mode | Purpose |
-|----------------|------|------------------|:--------------:|---------|
+|----------------|------|------------------|:--------------:|---------| 
 | `ValidateSubmission` | Business Rule | Before Insert | Synchronous | Validates required fields, calls `setAbortAction` |
 | `LoanApprovalFlow` | Flow Designer | Record Created | Asynchronous | Multi-step approval and task generation |
 | `LoanAppUtils` | Script Include | On Demand | Synchronous | Central class containing reusable business logic |
@@ -88,7 +88,7 @@ graph TD
 > **Render only if** the design includes notifications or messaging. Otherwise omit. Source standard: `references/11-notifications.md`.
 
 | Notification Name | Trigger (Record condition / Event) | Recipients (dynamic / group / field) | Channel | Persona |
-|-------------------|------------------------------------|--------------------------------------|---------|---------|
+|-------------------|------------------------------------|--------------------------------------|---------|---------| 
 | [Name] | [condition / event `x_[vendor]_[app].[event]`] | [recipient source] | [Email / SMS / Push / Chat] | [persona] |
 
 **Custom events register** (every event needs a producer AND a consumer — Check 1.3):
@@ -110,6 +110,18 @@ graph TD
 
 ---
 
+## 6C. Knowledge Base Map *(conditional)*
+> **Render only if** the design includes knowledge capture, search, or article management. Otherwise omit. Source standard: `references/12-knowledge.md`.
+
+| KB Name | Audience (User Criteria) | Surfaces (Portal / Workspace / VA) | Ownership Groups |
+|---------|--------------------------|-------------------------------------|-------------------|
+| [Name] | [user criteria] | [search surfaces per persona] | [group(s)] |
+
+- **Lifecycle:** [standard review workflow / self-publish — with sign-off justification]
+- **KCS posture:** [solve-loop article capture included? Which personas author?]
+
+---
+
 ## 7. Integration & Staging Architecture (If Applicable)
 - **Method:** [e.g., Scripted REST API / IntegrationHub Spoke / Import Set + RTE]
 - **Authentication:** [OAuth 2.0 / Mutual TLS / Credential Alias]
@@ -127,6 +139,38 @@ graph TD
 
 - **Plugin verification:** ☐ `com.snc.cmdb.scoped` (required for scoped IRE API) verified on target instance.
 - **Health gate:** [go-live CMDB health criteria per `14-cmdb.md` §5]
+
+---
+
+## 7B. Approval Matrix *(conditional)*
+> **Render only if** the design includes approvals. Otherwise omit. Source standard: `references/15-approvals-assignment.md`.
+
+| Approval Step | Target Table | Mechanism (Rule / Flow / Script) | Approver Resolution (Dynamic Source) | Timeout / Escalation Policy | Auto-Approve / Reject Decision |
+|---------------|-------------|----------------------------------|--------------------------------------|-----------------------------|-------------------------------|
+| [step] | [table] | [mechanism] | [manager chain / group / field] | [reminder → escalate → auto-action] | [policy decision] |
+
+- **Delegation policy:** [duration, self-approval prevention documented]
+
+---
+
+## 7C. Routing Map *(conditional)*
+> **Render only if** the design includes record routing or assignment beyond a single static group. Otherwise omit. Source standard: `references/15-approvals-assignment.md`.
+
+| Record Type | Routing Mechanism Chain | Fallback Queue | Skills / On-Call Requirements |
+|-------------|------------------------|----------------|-------------------------------|
+| [type] | [assignment rules → data lookup → manual triage] | [group] | [if applicable] |
+
+---
+
+## 7D. Reporting & Analytics Map *(conditional)*
+> **Render only if** the design includes reporting, dashboards, or PA indicators. Otherwise omit. Source standard: `references/16-reporting-analytics.md`.
+
+| Report / Indicator | Type (Report / PA Indicator / Dashboard) | Persona | Source (table / view / indicator) | Refresh / Collection | Owner |
+|--------------------|------------------------------------------|---------|-----------------------------------|----------------------|-------|
+| [name] | [type] | [persona] | [source] | [schedule] | [owner] |
+
+- **Database views required:** [join definitions if cross-table reporting needed]
+- **Schema notes:** [indexed reference fields, no `glide_list` on report-filtered fields]
 
 ---
 
@@ -177,18 +221,26 @@ Strict chronological implementation sequence enforcing dependency integrity:
 ---
 
 ## 10. Consistency Check Results
-- [x] **Check 1 (Orphans):** PASS — All components mapped to triggers and callers.
-- [x] **Check 2 (Security):** PASS — Explicit CRUD ACLs defined; no empty ACLs; RCA documented.
-- [x] **Check 3 (Execution):** PASS — No `current.update()` in Before BRs; async operations properly isolated.
-- [x] **Check 4 (Data Model):** PASS — Correct singular/plural naming; foreign keys indexed; `sys_user` unextended.
-- [x] **Check 5 (Build Order):** PASS — Chronological dependency graph is fully linear.
-- [x] **Check 6 (OOTB):** PASS — No duplication of native platform capabilities; CI writes route through IRE (Rule 6.4); AI components entitlement-verified (Rule 6.5).
+| Check | Result | Evidence |
+|-------|--------|----------|
+| **Check 1 (Orphans)** | [ ] PASS / FAIL | [All components mapped to triggers and callers — list orphans found, or confirm none] |
+| **Check 2 (Security)** | [ ] PASS / FAIL | [Explicit CRUD ACLs defined; zero empty ACLs; RCA documented — list gaps found, or confirm none] |
+| **Check 3 (Execution)** | [ ] PASS / FAIL | [No `current.update()` in Before BRs; no synchronous outbound HTTP in Before/After BRs; async operations isolated — list violations, or confirm none] |
+| **Check 4 (Data Model)** | [ ] PASS / FAIL | [Singular/plural naming correct; foreign keys indexed; `sys_user` unextended — list violations, or confirm none] |
+| **Check 5 (Build Order)** | [ ] PASS / FAIL | [Dependency graph is fully linear; no forward references — list conflicts, or confirm none] |
+| **Check 6 (OOTB)** | [ ] PASS / FAIL | [No OOTB duplication; CI writes via IRE (6.4); AI entitlements verified (6.5) — list violations, or confirm none] |
 
 ---
 
 ## 11. Open Questions & Technical Risk Register
 | # | Question / Unknown | Impact Area | Proposed Resolution / Action Item |
-|---|---------------------|-------------|------------------------------------|
+|---|---------------------|-------------|------------------------------------| 
 | 1 | [e.g., Anticipated record creation volume per day] | Data Model / Performance | Verify with business whether archiving rules are needed. |
 | 2 | [e.g., External API rate limits] | Integration Architecture | Confirm provider rate limits to tune retry policies. |
 ```
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Scoped Application Architecture](https://docs.servicenow.com/bundle/xanadu-application-development/page/build/applications/concept/c_ApplicationScope.html)
+- [ServiceNow Documentation: Application Development Process](https://docs.servicenow.com/bundle/xanadu-application-development/page/build/applications/concept/c_AppDevProcess.html)

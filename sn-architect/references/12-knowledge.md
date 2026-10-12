@@ -43,8 +43,14 @@
 
 ## 4. Output in the Architecture Document
 
-Every architecture document with a knowledge component must include:
+Every architecture document with a knowledge component must include a **Knowledge Base Map** (template §6C):
 
 - **Knowledge Base map:** KB name → audience (user criteria) → surfaces (Portal search, Workspace Agent Assist, VA) → ownership groups.
 - **Lifecycle decision:** standard review workflow vs self-publish (with sign-off).
 - **KCS posture:** whether the design includes solve-loop article capture, and which personas are incentivized to author.
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Knowledge Management](https://docs.servicenow.com/bundle/xanadu-service-management-framework/page/product/knowledge-management/concept/knowledge-management.html)
+- [ServiceNow Documentation: User Criteria for Knowledge Bases](https://docs.servicenow.com/bundle/xanadu-service-management-framework/page/product/knowledge-management/concept/user-criteria.html)

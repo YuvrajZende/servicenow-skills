@@ -17,8 +17,6 @@
 | **AI Search** | Relevance-tuned enterprise search across knowledge, catalog, community | Search profiles, federated sources | Entitled add-on replacing legacy text search. |
 | **Document Intelligence** | Invoice/ID document extraction into structured fields | Document extraction models | Entitled add-on. |
 
-*Note: Now Assist has been rebranded to "ServiceNow Otto" in current messaging — technical identifiers (table names, APIs) remain unchanged. Design against the identifiers.*
-
 ---
 
 ## 2. AI Agents (Agentic AI) Design Standards
@@ -46,7 +44,7 @@ AI Agents are defined as: an agent (persona + instructions) with bound tools, in
 
 1. **Capabilities:** classification (predict a field value), similarity (find related records), regression (predict a number), clustering (group records). Choose per business question, not per fashion.
 2. **Training data is the design constraint:** solutions train on historical record data (`ml_solution`); dirty or sparse training data produces confidently wrong predictions. Design the data-quality gate **before** the model.
-3. **Solution naming linkage:** the `ml_solution.solution_name` must align with the `sys_nlu_model.name` convention (solution name prefixed `ml_` matching the model name) — broken linkage silently returns no published models.
+3. **Environment & training data dependencies:** Predictive Intelligence models train against historical record volume (typically 300+ records per category). In multi-instance pipelines (Dev ➔ Test ➔ Prod), sub-production environments frequently lack the data volume or variety needed for quality training; the architecture must explicitly document where models are trained and how accuracy is validated before production activation.
 4. **PI outputs augment, humans decide:** predicted category/similarity are suggestions into the workflow, never silent overrides of fulfiller judgment without an explicit automation decision.
 
 ---
@@ -64,8 +62,15 @@ AI Agents are defined as: an agent (persona + instructions) with bound tools, in
 
 ## 6. Output in the Architecture Document
 
-Every architecture document must include an **AI Capability Map** (only for components that survive the entitlement check):
+When the design specifies AI, Now Assist, or automation capabilities, the architecture document must include an **AI Agent Tool & Entitlement Map** (template §6B, rendered only for components that survive the entitlement check):
 
 | Capability | Business Use | Entitlement Verified? | Inputs / Training Data | Human-in-the-Loop Point | Success Metric |
 |------------|--------------|----------------------|------------------------|-------------------------|----------------|
 | AI Agent: triage | Auto-categorize new cases | ☐ Instance: ___ | Case text history | Approval before state change | ≥X% correct triage |
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Now Assist and Generative AI](https://docs.servicenow.com/bundle/xanadu-intelligent-experiences/page/administer/now-assist/concept/now-assist.html)
+- [ServiceNow Documentation: Virtual Agent Architecture](https://docs.servicenow.com/bundle/xanadu-build-workflows/page/administer/virtual-agent/concept/virtual-agent-overview.html)
+- [ServiceNow Documentation: Predictive Intelligence](https://docs.servicenow.com/bundle/xanadu-intelligent-experiences/page/administer/predictive-intelligence/concept/predictive-intelligence.html)

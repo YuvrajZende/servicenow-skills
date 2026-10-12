@@ -39,13 +39,13 @@ while (gr.next()) {
 
 ### The Trap Beyond Arrays
 
-Pushing into an array is only the loudest failure. The same GlideElement reference leaks through any context that reads the element instead of its value:
+Pushing into an array is only the most infamous symptom of retaining `GlideElement` references. Because `gr.field_name` returns a `GlideElement` object rather than a JavaScript primitive, reading it directly in assignments, comparisons, and logic causes subtle bugs:
 
-- **Truthiness checks:** `if (!gr.field_name)` evaluates the element object, not the value — an empty field may be truthy, a populated one may behave unexpectedly.
-- **String concatenation:** `gr.field_name + ''` *sometimes* works by coercion — which makes it worse, because the bug hides until a context where it doesn't.
-- **Storing into variables/objects:** any assignment carries the reference, and the value it shows depends on the cursor position *when it is later read*.
+- **Direct storage into variables or objects:** Assigning `var val = gr.field_name` (or setting an object property `obj.name = gr.field_name`) stores the `GlideElement` object reference, not the string value. In a loop, every stored property will point to the cursor's final record value once iteration completes.
+- **Concatenation and coercion:** Concatenating `gr.field_name + ''` relies on implicit Java-to-JavaScript string conversion, which can behave inconsistently depending on whether the code runs in scoped scripts, global scripts, or server-to-client JSON serialization.
+- **Empty & existence checks:** Rather than relying on implicit JavaScript truthiness (`if (gr.field_name)` or `if (!gr.field_name)`), use official platform APIs designed specifically for field existence checks: `gr.field_name.nil()`, `gs.nil(gr.field_name)`, or compare primitive values using `!gr.getValue('field_name')`.
 
-**Rule:** in any stored, compared, concatenated, or truthiness-tested context, use `gr.getValue('field_name')`. Dot-access (`gr.field_name`) is reserved for assignment targets (`gr.field_name = value`) and deliberate GlideElement APIs (`setDisplayValue`, `getDisplayValue`).
+**Rule:** When reading field values for logic, comparisons, array/object storage, or returns, always extract the primitive value via `gr.getValue('field_name')`. Reserve dot-access (`gr.field_name`) for assigning values (`gr.field_name = val`) and invoking GlideElement methods (`.nil()`, `.getDisplayValue()`, `.canRead()`).
 
 ---
 
@@ -129,7 +129,7 @@ Result: EVERY logged-in user in the company can read all loan requests!
 ✅ RIGHT: Explicit Role-Gated ACL Configuration
 Table: x_acme_loan_request
 Operation: read
-Roles: [x_acme_loan.fulfiller, x_acme_loan.admin]
+Roles: [x_acme_loan_fulfiller, x_acme_loan_admin]
 Condition: [None or State-based]
 Script: answer = true;
 Result: Only authorized fulfillers and admins can read loan records.
@@ -247,3 +247,10 @@ gr.update();
 
 ### Why It Fails
 Client scripts, `g_form.setReadonly`, and hidden fields are *presentation*, not security. Any permission decision enforced only in the browser is bypassed by any REST call or crafted request. Server ACLs (`05-security-design.md`) are the only enforcement layer; client logic is UX.
+
+---
+
+## Authoritative Sources
+- [ServiceNow Developer Guide: GlideRecord API (Scoped)](https://developer.servicenow.com/dev.do#!/reference/api/latest/server/no-namespace/c_GlideRecordScopedAPI)
+- [ServiceNow Developer Guide: GlideElement API (Scoped)](https://developer.servicenow.com/dev.do#!/reference/api/latest/server/no-namespace/c_GlideElementScopedAPI)
+- [ServiceNow Documentation: Server-side Scripting Best Practices](https://docs.servicenow.com/bundle/xanadu-application-development/page/script/server-scripting/concept/c_ServerSideScripting.html)

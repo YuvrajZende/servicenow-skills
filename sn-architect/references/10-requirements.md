@@ -46,10 +46,16 @@
 
 ## 4. Output in the Architecture Document
 
-Every architecture document for a work-management app must include an **SLA Matrix**:
+Every architecture document for a work-management app must include an **SLA Matrix** (template §4A):
 
 | SLA Name | Type | Table | Target | Schedule / Timezone | Start | Pause | Stop | Breach Action |
 |----------|------|-------|--------|---------------------|-------|-------|------|---------------|
 | `Response Time` | SLA | `x_acme_loan_request` | 4h business | 8-5 Mon-Fri, tenant TZ | Created | Awaiting customer | In progress / Closed | Notify group + escalate |
 
 Plus: the timezone decision, the pause/unpause pairings, and the expected `task_sla` volume impact (tasks/day × SLAs per task) feeding the archiving strategy in `01-data-model.md`.
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Service Level Management (SLA)](https://docs.servicenow.com/bundle/xanadu-it-service-management/page/product/service-level-management/concept/c_ServiceLevelManagement.html)
+- [ServiceNow Documentation: Task SLA Engine and Schedules](https://docs.servicenow.com/bundle/xanadu-it-service-management/page/product/service-level-management/concept/c_SLAEngine.html)

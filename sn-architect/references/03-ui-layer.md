@@ -14,6 +14,7 @@ ServiceNow provides four primary presentation layers. Choosing the wrong UI tier
 | **UI Builder (UIB)** | Custom role-specific app users | Drag-and-drop WYSIWYG page designer, custom layouts, component composition | Custom dashboards, specialized record views, or novel application experiences. | Now Component Framework |
 | **Employee Center / Service Portal** | End users, Employees, Requesters | Consumer-grade search, catalog browsing, knowledge articles, ticket status | Self-service intake and status tracking for non-fulfiller users. | Angular / Service Portal widgets |
 | **Platform UI (Classic Forms & Lists)** | System Administrators, Developers | Direct schema access, related lists, standard list filtering, zero layout overhead | Administrative setup, configuration tables, system backend. | Classic Form & List Engine (`navpage.do`) |
+| **SDK UI Page (modern JS frameworks)** | Developers building bespoke embedded experiences | Full frontend framework power (React, Vue, Svelte, SolidJS) with a ServiceNow deployment path | Only when UI Builder and standard components genuinely cannot deliver the requirement — the highest-maintenance tier. | ServiceNow SDK + framework (see `17-fluent-cookbook.md`) |
 
 ---
 
@@ -54,6 +55,11 @@ Every comprehensive application architecture must map personas to their correspo
 - Requirements call for custom responsive grids, dynamic page routing, or bespoke data visualization.
 - Standard form layouts cannot accommodate required layout density or custom web components.
 
+### When to choose an SDK UI Page (modern framework):
+- A genuinely bespoke interactive experience is required that UI Builder composition cannot express — this is the **last resort** tier, justified only after UI Builder and standard components are ruled out (apply the OOTB-first test from `00-ootb-first.md` at the UI layer).
+- The org accepts the maintenance load: framework upgrades, build tooling, and upgrade compatibility are now the app's responsibility — record this in the architecture document's risk register.
+- Official runnable samples for React, Vue, Svelte, and SolidJS UI Pages exist in [ServiceNow/sdk-examples](https://github.com/ServiceNow/sdk-examples) — start from those, never from scratch.
+
 ### When to choose Employee Center / Service Portal:
 - Target audience does not hold an `itil` or fulfiller license.
 - Clean, guided submission forms (Record Producers, Catalog Items) are required.
@@ -80,3 +86,11 @@ Every comprehensive application architecture must map personas to their correspo
 | **Theming** | Next Experience theming tokens / brand customization apply across Workspace, portals, and mobile. Configure theming centrally; never restyle surfaces with custom CSS hacks per page. |
 | **Localization (i18n)** | Custom apps need translated field labels, choices, and UI messages (`sys_ui_message`) if any persona is non-English. Decide the language scope at design time (see `01-data-model.md` translated fields). |
 | **UI Action surfaces** | Every UI Action designed in `02-logic-placement.md` must be verified for its Workspace/Portal surface — classic buttons do not auto-appear in Workspace. |
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Next Experience UI Builder](https://docs.servicenow.com/bundle/xanadu-application-development/page/administer/ui-builder/concept/ui-builder.html)
+- [ServiceNow Documentation: Configurable Workspaces](https://docs.servicenow.com/bundle/xanadu-platform-user-interface/page/administer/workspace/concept/configurable-workspace.html)
+- [ServiceNow Documentation: Employee Center](https://docs.servicenow.com/bundle/xanadu-employee-service-management/page/product/employee-center/concept/employee-center-overview.html)
+- [Official SDK samples: UI Pages with React / Vue / Svelte / SolidJS](https://github.com/ServiceNow/sdk-examples)

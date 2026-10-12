@@ -85,7 +85,7 @@ Inbound email actions script how the instance responds to incoming email — ana
 
 ## 6. Output in the Architecture Document
 
-Every architecture document must include a **Notification Matrix**:
+When the design includes notifications or messaging, the architecture document must include a **Notification Matrix** (template §6A):
 
 | Notification Name | Trigger (Record condition / Event) | Recipients (dynamic/group/field) | Channel | Persona |
 |-------------------|-----------------------------------|----------------------------------|---------|---------|
@@ -93,3 +93,10 @@ Every architecture document must include a **Notification Matrix**:
 | `Request Submitted Confirmation` | Record inserted | `opened_by` | Email | End User |
 
 Plus: list of custom events with producer and consumer columns (satisfies Check 1.3), and the inbound email entry points with their security validation strategy.
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Notifications](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/notification/concept/c_Notifications.html)
+- [ServiceNow Documentation: Event Registry](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/platform-events/concept/events.html)
+- [ServiceNow Documentation: Inbound Email Actions](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/notification/concept/c_InboundEmailActions.html)

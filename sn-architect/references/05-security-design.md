@@ -62,7 +62,7 @@ When searching for matching ACL rules, the engine evaluates from **most specific
 ### Inside Any Individual ACL Rule
 Within a single matching ACL rule, **ALL criteria must evaluate to true**:
 1. **Roles:** User must possess at least one of the roles listed (OR logic across roles in the list).
-2. **Security Attributes:** If security attributes are configured (newer releases), they must pass (e.g., `deny_unless` attributes evaluate before roles).
+2. **Security Attributes (if configured):** If Attribute-Based Access Control (ABAC) or Data Filtration attributes are defined, the user session must satisfy the policy requirements.
 3. **Condition Builder:** The condition expression must evaluate to `true` against the target record.
 4. **Script Block:** If a script is configured, it must set `answer = true`.
 
@@ -97,7 +97,7 @@ An **Empty ACL** is an ACL rule created with **no roles, no conditions, and no s
 - If created on sensitive tables, it unintentionally opens unrestricted read or write access to every user in the company.
 
 ### Public Surface & Guest Session Leakage
-Unauthenticated users operate under the platform **Guest user session** (`sys_id: 513a0208c611227b007e800ce2b3e680`).
+Unauthenticated users operate under the platform **Guest user session** (look up user ID `guest` in `sys_user` to confirm the `sys_id` on your instance — it is a default system record but the `sys_id` can vary across installations).
 - **Research Finding (AppOmni / CVE disclosures):** Instances leaked corporate data when tables had empty ACLs or lacked explicit ACLs while being queried by public UI Pages, public Service Portal widgets, or APIs marked with `Requires authentication = false`.
 - **Architectural Safeguards:**
   1. Never mark custom Scripted REST APIs as public unless explicitly intended for public anonymous traffic.
@@ -145,4 +145,11 @@ Beyond the §3 ACL package, verify before production:
 - [ ] No security-relevant decision made client-side (client scripts are advisory; server ACLs are the enforcement).
 - [ ] Inbound email actions and webhooks validate the sender (unauthenticated write surface — see `11-notifications.md`, `04-integration-design.md`).
 - [ ] Service accounts are least-privilege and dedicated (see `04-integration-design.md` §7).
-- [ ] Security Attributes considered for deny-unless requirements (see §2).
+- [ ] Security Attributes reviewed for applicability on the target instance release (see §2).
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Access Control Rules (ACL)](https://docs.servicenow.com/bundle/xanadu-platform-security/page/administer/contextual-security/concept/access-control-rules.html)
+- [ServiceNow Documentation: Restricted Caller Access (RCA)](https://docs.servicenow.com/bundle/xanadu-application-development/page/build/applications/concept/c_RestrictedCallerAccess.html)
+- [ServiceNow Documentation: High Security Settings and Default Deny](https://docs.servicenow.com/bundle/xanadu-platform-security/page/administer/security-advisory/concept/high-security-settings.html)

@@ -12,7 +12,7 @@ Architect end-to-end ServiceNow solutions from plain-language requirements **by 
 
 ---
 
-## Core Guidelines (Karpathy Heuristics for ServiceNow)
+## Core Guidelines (Platform Heuristics)
 
 ### 1. Don't Rebuild ServiceNow
 **Check OOTB first. Configure before customizing. Never extend `sys_user`.**
@@ -77,6 +77,8 @@ Work through these steps out loud before producing any code or configuration:
 5. **Security & Integration:** Load `references/04-integration-design.md` and `references/05-security-design.md`. Create explicit CRUD ACLs. Define scoped roles, RCA, and REST idempotency.
 6. **Verify & Format:** Load `references/07-architecture-doc-template.md` and `references/08-consistency-checks.md`. Run all 6 automated consistency checks. Generate the complete architecture document including the Mermaid diagram and phased build order.
 
+After the user approves the architecture, **implementation**: load `references/17-fluent-cookbook.md` and generate ServiceNow SDK (Fluent) metadata from verified official patterns — never from memory.
+
 ---
 
 ## Topic Reference Routing Table
@@ -95,10 +97,11 @@ Load these modular references on demand as each concern becomes active:
 | **Approvals & Routing** | Approval engine vs flow approvals, delegation, assignment rules, skills-based routing, on-call | [`references/15-approvals-assignment.md`](references/15-approvals-assignment.md) |
 | **SLA & Commitments** | SLA/OLA/UC definitions, pause/stop conditions, timezone strategy, breach actions | [`references/10-requirements.md`](references/10-requirements.md) |
 | **CMDB & CSDM** | IRE-based CI loading, CSDM domains, data precedence, CMDB health gates | [`references/14-cmdb.md`](references/14-cmdb.md) |
-| **AI & Agents** | AI Agents, Now Assist/Otto, Virtual Agent, Predictive Intelligence, AI Search, entitlement checks | [`references/13-ai-automation.md`](references/13-ai-automation.md) |
+| **AI & Agents** | AI Agents, Now Assist, Virtual Agent, Predictive Intelligence, AI Search, entitlement checks | [`references/13-ai-automation.md`](references/13-ai-automation.md) |
 | **Knowledge** | Knowledge bases, article lifecycle, KCS, search surfaces | [`references/12-knowledge.md`](references/12-knowledge.md) |
 | **Reporting & Analytics** | Reports, database views, Performance Analytics indicators, dashboards | [`references/16-reporting-analytics.md`](references/16-reporting-analytics.md) |
 | **Delivery & SDK** | ServiceNow SDK structure, verified CLI (`now-sdk install`), ATF suites, Git vs Update Sets | [`references/06-delivery-design.md`](references/06-delivery-design.md) |
+| **Fluent Code Generation** | Writing `.now.ts` metadata (tables, ACLs, BRs, scripted REST, ATF) — verified official patterns, builder APIs | [`references/17-fluent-cookbook.md`](references/17-fluent-cookbook.md) |
 | **Document Template** | Structuring the final architecture specification with Mermaid diagram and build order | [`references/07-architecture-doc-template.md`](references/07-architecture-doc-template.md) |
 | **Consistency Checks** | Running the 6 pre-delivery checks (orphans, ACL completeness, recursion, dependencies) | [`references/08-consistency-checks.md`](references/08-consistency-checks.md) |
 | **Anti-Patterns** | Reviewing known gotchas (`getValue` pointer trap, `current.update()` in Before BR, GlideAjax) | [`references/09-anti-patterns.md`](references/09-anti-patterns.md) |

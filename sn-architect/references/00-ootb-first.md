@@ -15,7 +15,7 @@ ServiceNow provides rich data models across product lines. Customizing should ne
 | Domain | Standard Tables to Evaluate | When to Use Instead of Custom Table |
 |--------|-----------------------------|-------------------------------------|
 | **Work Items & Operations** | `task`, `planned_task`, `ticket` | Any record with assigned groups, individual assignees, states, SLAs, or approval lifecycles. |
-| **User & Customer Contacts** | `sys_user`, `csm_contact` (formerly `customer_contact`), `csm_consumer` (formerly `consumer`) | People. **NEVER create a custom user table. NEVER extend `sys_user`.** |
+| **User & Customer Contacts** | `sys_user`, `customer_contact` (CSM B2B, extends `sys_user`), `csm_consumer` (CSM B2C, standalone) | People. **In custom applications, never create a custom user table and never extend `sys_user`.** |
 | **Companies & Vendors** | `core_company` | Accounts, vendors, manufacturers, clients. |
 | **Physical / Logical Assets** | `alm_asset`, `cmdb_ci` | Physical equipment, software licenses, servers, network appliances. |
 | **Omnichannel Intake** | `interaction` | Inbound chat, phone, or email requests before converting to work items. |
@@ -59,3 +59,10 @@ Every architecture document produced by `sn-architect` must explicitly contain a
 - **OOTB Candidates Evaluated:** List of standard tables and modules evaluated.
 - **Decision:** Extension vs Configuration vs Custom Standalone.
 - **Justification:** Clear business or technical rationale if custom components are chosen.
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Table extension and the data model](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/managing-data/concept/c_DataDictionaryTables.html)
+- [ServiceNow Documentation: Customer Service Management tables](https://docs.servicenow.com/bundle/xanadu-customer-service-management/page/product/customer-service-management/reference/r_CustomerServiceTables.html)
+- [ServiceNow Community: Common Service Data Model (CSDM) Overview](https://www.servicenow.com/community/developer-articles/common-service-data-model-csdm-overview/ba-p/2275468)

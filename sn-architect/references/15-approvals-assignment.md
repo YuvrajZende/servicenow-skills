@@ -68,7 +68,13 @@
 
 ## 5. Output in the Architecture Document
 
-Every architecture document must include:
+When the design includes approvals or record routing/assignment beyond a single static group, the architecture document must include:
 
-- **Approval Matrix:** each approval step — target table, mechanism (rule/flow/script), approver resolution (dynamic source), timeout/escalation policy, auto-approve/reject decision.
-- **Routing map:** record type → routing mechanism chain → fallback queue; plus the skills/on-call requirements if used.
+- **Approval Matrix** (template §7B, conditional on approvals): each approval step — target table, mechanism (rule/flow/script), approver resolution (dynamic source), timeout/escalation policy, auto-approve/reject decision.
+- **Routing Map** (template §7C, conditional on dynamic routing): record type → routing mechanism chain → fallback queue; plus the skills/on-call requirements if used.
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Approvals](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/workflow-administration/concept/approvals.html)
+- [ServiceNow Documentation: Advanced Work Assignment (AWA)](https://docs.servicenow.com/bundle/xanadu-build-workflows/page/administer/advanced-work-assignment/concept/advanced-work-assignment.html)

@@ -10,7 +10,7 @@
 |---------|:---------:|------------------|----------------------|:------------------------:|:-----------:|
 | **Table API** | Inbound | Direct, single-record CRUD by trusted external systems | REST / JSON | ❌ Direct to target | No |
 | **Scripted REST API** | Inbound | Bespoke endpoints, complex payload validation, custom HTTP status codes, multi-table operations | REST / JSON | Optional | No |
-| **Import Set + Transform Map** | Inbound | Bulk data feeds, CSV/JSON file ingestion, legacy ETL | Staging (`u_imp_*`) | ✅ Yes | Optional |
+| **Import Set + Transform Map** | Inbound | Bulk data feeds, CSV/JSON file ingestion, legacy ETL | Staging (extends `sys_import_set_row`) | ✅ Yes | Optional |
 | **Robust Import Transformer (RTE)** | Inbound | High-volume structured data, complex ETL pipelines, multi-target loading | Staging / Memory Engine | ✅ Yes | Optional |
 | **IntegrationHub Spoke** | Outbound | Standard enterprise SaaS integrations (Jira, Slack, Microsoft 365, Workday) | REST / Flow Action | ❌ Direct | Optional |
 | **RESTMessageV2 (in Script Include)** | Outbound | Custom REST endpoints without spokes, high-throughput custom payloads | HTTPS / Script | ❌ Direct | Optional |
@@ -28,7 +28,7 @@ Architects frequently confuse when to use a Scheduled Script Execution vs an Imp
 +─────────────────────────────────────────────────────────────────────────────+
 | External system pushes data via API?                                        |
 |   ├── Simple single-record CRUD? ──────────► Scripted REST / Table API      |
-|   └── Bulk batch payload? ────────────────► Import Set API (u_imp_* table)  |
+|   └── Bulk batch payload? ────────────────► Import Set API (Staging table)  |
 |                                                                             |
 | ServiceNow pulls data from external system on schedule?                     |
 |   ├── Complex ETL, deduplication, transform mapping?                        |
@@ -40,7 +40,7 @@ Architects frequently confuse when to use a Scheduled Script Execution vs an Imp
 ```
 
 ### Import Set & RTE Architectural Best Practices:
-1. **Never write directly to target production tables from external feeds:** Always stage data in an Import Set table (`u_imp_*`) that extends `sys_import_set_row`.
+1. **Never write directly to target production tables from external feeds:** Always stage incoming batch data in a dedicated staging table extending `sys_import_set_row` before transforming into production tables.
 2. **Coalesce Fields:** Define clear, indexed coalesce keys to ensure deterministic insert vs update behavior.
 3. **Robust Import Transformer (RTE):** Use RTE instead of legacy Transform Maps for complex multi-entity mapping (e.g., CSDM data loading, where one payload creates both a CI and an Asset record).
 
@@ -102,5 +102,12 @@ External systems retrying network requests must not duplicate transactions.
 The identity layer feeds every integration and every user record:
 
 - **SSO (SAML / OIDC):** the standard enterprise path for user authentication — design the IdP integration as an architecture component (name the IdP, the federation protocol, and the provisioning trigger), never as "login will be configured."
-- **User provisioning:** LDAP vs SCIM vs automated creation — choose one authoritative provisioning path. **NEVER extend `sys_user`** for provisioning attributes (see `01-data-model.md`).
+- **User provisioning:** LDAP vs SCIM vs automated creation — choose one authoritative provisioning path. In custom applications, avoid extending `sys_user` for provisioning attributes (see `01-data-model.md`).
 - **Service accounts for integrations:** every outbound integration uses a dedicated, named service account with least-privilege roles (never a human user's account, never admin) — and its credentials live in Connection & Credential Aliases (§4).
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: IntegrationHub Spokes](https://docs.servicenow.com/bundle/xanadu-integrate-applications/page/administer/integrationhub/concept/integrationhub-spokes.html)
+- [ServiceNow Documentation: Scripted REST APIs](https://docs.servicenow.com/bundle/xanadu-application-development/page/integrate/custom-web-services/concept/c_ScriptedRESTWebServices.html)
+- [ServiceNow Documentation: Import Sets and Robust Import Transformer](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/import-sets/concept/c_ImportSets.html)

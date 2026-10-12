@@ -13,7 +13,7 @@ Before presenting an architecture specification, the architect must validate the
 ### Check 1: Orphan Component Check
 *Objective: Ensure every proposed component has an active caller, consumer, or trigger.*
 
-- **Rule 1.1:** Every Script Include must be invoked by at least one Business Rule, Flow Action, Scheduled Job, Scripted REST API, or Client Script (via GlideAjax). No "dead code" in design.
+- **Rule 1.1:** Every Script Include must be invoked by at least one Business Rule, Flow Action, Scheduled Job, Scripted REST API, Client Script (via GlideAjax), or another Script Include that itself passes this check. *Library & Public API Provision:* If a Script Include is intentionally designed as an exported library/API for external callers or implements a platform Extension Point (`sys_extension_point`), its public API contract, callers, and Restricted Caller Access (RCA) permissions must be explicitly documented in Section 6 and Section 8. No unreferenced "dead code" in design.
 - **Rule 1.2:** Every Flow Designer flow must have an explicit trigger (Record Insert/Update, Scheduled, Service Catalog, or Subflow called from script).
 - **Rule 1.3:** Every custom event registered in `sysevent_register` must be fired by a script (`gs.eventQueue`) and consumed by an Email Notification or Script Action.
 - **Rule 1.4:** Every custom role must be mapped to at least one ACL, Module, or Catalog Item.
@@ -36,7 +36,7 @@ Before presenting an architecture specification, the architect must validate the
 
 - **Rule 3.1:** `current.update()` must NEVER be specified in Before Business Rules (causes recursive loop failure).
 - **Rule 3.2:** `current.setAbortAction(true)` must ONLY be placed in Before Business Rules (it does not abort database writes in After, Async, or Flow Designer).
-- **Rule 3.3:** Outbound HTTP requests or heavy processing must NEVER run in synchronous Before or Display Business Rules (blocks the user thread and database lock). Use Async BR, Flow Designer, or Scheduled Jobs.
+- **Rule 3.3:** Outbound HTTP requests or heavy processing must NEVER run in synchronous Business Rules — this includes **Before, After, and Display** rules (all three execute on the user's session thread and block the transaction). Use Async BR, Flow Designer, or Scheduled Jobs.
 - **Rule 3.4:** No client-side synchronous GlideRecord calls. Any client-to-server data fetch must specify `GlideAjax` with an asynchronous callback.
 
 ---
@@ -46,7 +46,7 @@ Before presenting an architecture specification, the architect must validate the
 
 - **Rule 4.1:** Table technical name must be singular (`x_<vendor>_<app>_<name>`); table display label must be plural (`Names`).
 - **Rule 4.2:** Custom fields in scoped apps must follow `snake_case`. System prefix `sys_` is strictly forbidden for custom fields.
-- **Rule 4.3:** `sys_user` must NEVER be extended.
+- **Rule 4.3:** Custom applications must NEVER extend `sys_user` (store application-specific user data in a profile table referencing `sys_user`).
 - **Rule 4.4:** Reference fields must target valid, existing tables and must be flagged for indexing.
 - **Rule 4.5:** If a relationship requires querying, filtering, or reporting joins, it must use an M2M junction table, not a `glide_list`.
 
@@ -72,3 +72,9 @@ Before presenting an architecture specification, the architect must validate the
 - **Rule 6.3:** Verify that an official Store Spoke is evaluated before proposing a bespoke Scripted REST or outbound REST integration.
 - **Rule 6.4 (IRE Enforcement):** Any design creating or updating Configuration Items must route through `sn_cmdb.IdentificationEngine` (or `createOrUpdateCIEnhanced`, or an IRE-backed transform map via `global.CMDBTransformUtil().identifyAndReconcile()`). Direct inserts into `cmdb` tables — via GlideRecord, transform maps, or REST — **fail review unconditionally.** Verify the scoped IRE prerequisite (`com.snc.cmdb.scoped`) when the caller is a scoped app. (Standard: `14-cmdb.md` §1.)
 - **Rule 6.5 (AI Entitlement Gate):** Any design specifying GenAI / Now Assist / AI Agents / Virtual Agent / Predictive Intelligence must include an explicit **entitlement and release verification check** — verified plugin activation and licensed entitlement on the target instance, recorded in the AI Agent Tool & Entitlement Map (`07-architecture-doc-template.md` §6B). Designing against an unverified AI capability **fails review.** (Standard: `13-ai-automation.md` Hard Rule.)
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Coding Best Practices](https://docs.servicenow.com/bundle/xanadu-application-development/page/script/general-scripting/concept/c_CodingBestPractices.html)
+- [ServiceNow Documentation: Instance Scan Checks and Suites](https://docs.servicenow.com/bundle/xanadu-application-development/page/administer/instance-scan/concept/instance-scan-suites.html)

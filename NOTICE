@@ -1,0 +1,16 @@
+NOTICE
+
+This project is an unofficial community work provided "as is".
+It is not affiliated with, endorsed by, or sponsored by ServiceNow, Inc.
+"ServiceNow" is a trademark of ServiceNow, Inc., used here descriptively to
+indicate compatibility only.
+
+Third-party references:
+- ServiceNow/sdk-examples (Apache-2.0 / MIT per upstream): cited and linked
+  as authoritative Fluent code patterns; small attributed code excerpts
+  included for reference.
+- Happy-Technologies-LLC/happy-platform-skills (Apache-2.0): referenced in
+  the README as a complementary task-level skills library; no code copied.
+
+Always validate generated architectures and code against your instance's
+release, licensing, and security posture.

@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Format](https://img.shields.io/badge/format-agentskills.io-blue)](https://agentskills.io)
-[![References](https://img.shields.io/badge/references-17-blueviolet)](#how-it-works)
+[![References](https://img.shields.io/badge/references-18-blueviolet)](#how-it-works)
 [![Consistency checks](https://img.shields.io/badge/consistency_checks-6-orange)](sn-architect/references/08-consistency-checks.md)
 [![Tested](https://img.shields.io/badge/behavior_tested-RED%2FGREEN%2C_n%3D1-yellow)](#test-evidence)
 
@@ -19,7 +19,7 @@ flowchart LR
     A["Business requirement"] --> B{"SKILL.md<br/>thin router"}
     B -- "full mode" --> C["6-step reasoning loop"]
     B -- "surgical mode" --> D["targeted reference only"]
-    C --> E["On-demand references<br/>00–16"]
+    C --> E["On-demand references<br/>00–17"]
     D --> E
     E --> F["6 consistency checks<br/>incl. IRE + AI entitlement gates"]
     F --> G["Architecture spec<br/>+ conditional appendices"]
@@ -43,10 +43,10 @@ These are not model-knowledge problems — they are **workflow** problems. Agent
 
 ## How it works
 
-The skill is a **thin router, not a documentation dump**. `SKILL.md` (~100 lines) carries hard rules, a surgical-vs-full-mode decision, a 6-step reasoning loop, and a routing table. Seventeen modular reference files load **on demand**, only when a concern becomes active:
+The skill is a **thin router, not a documentation dump**. `SKILL.md` (~100 lines) carries hard rules, a surgical-vs-full-mode decision, a 6-step reasoning loop, and a routing table. Eighteen modular reference files load **on demand**, only when a concern becomes active — and after the architecture is approved, the agent generates ServiceNow SDK (Fluent) code from **verified official patterns**, not from memory:
 
 <details>
-<summary><strong>All 17 reference files</strong> (click to expand)</summary>
+<summary><strong>All 18 reference files</strong> (click to expand)</summary>
 
 | Reference | Concern |
 |-----------|---------|
@@ -63,10 +63,11 @@ The skill is a **thin router, not a documentation dump**. `SKILL.md` (~100 lines
 | `10-requirements.md` | SLA / OLA / UC design |
 | `11-notifications.md` | Notification records, event pipeline, inbound email |
 | `12-knowledge.md` | Knowledge bases, article lifecycle, KCS |
-| `13-ai-automation.md` | AI Agents, Now Assist/Otto, Virtual Agent, Predictive Intelligence, AI Search |
+| `13-ai-automation.md` | AI Agents, Now Assist, Virtual Agent, Predictive Intelligence, AI Search |
 | `14-cmdb.md` | IRE enforcement, CSDM, data precedence, CMDB health |
 | `15-approvals-assignment.md` | Approval engine, routing, assignment, on-call |
 | `16-reporting-analytics.md` | Reports, database views, Performance Analytics |
+| `17-fluent-cookbook.md` | `.now.ts` code generation from verified official patterns (tables, ACLs, BRs, REST, ATF, UI pages) |
 
 </details>
 
@@ -80,7 +81,7 @@ For a full application requirement, the agent produces an **architecture specifi
 - Data model with relationships, naming, and indexing decisions
 - Mermaid architecture diagram and sync/async execution mapping
 - Security matrix: scoped roles, explicit CRUD + wildcard ACLs
-- Conditional appendices exactly when relevant: SLA matrix, notification matrix, CMDB ingestion & IRE precedence table, AI agent tool & entitlement map
+- Conditional appendices exactly when relevant: SLA matrix, notification matrix, knowledge base map, CMDB ingestion & IRE precedence table, approval matrix, routing map, reporting & analytics map, AI agent tool & entitlement map
 - Chronological phased build order and a risk register
 
 For small tasks ("fix this ACL", "add one business rule"), the skill runs in **surgical mode** — it loads only the targeted reference and applies only the relevant check, instead of forcing the full ceremony.
@@ -92,12 +93,18 @@ For small tasks ("fix this ACL", "add one business rule"), the skill runs in **s
 ### Claude Code (personal — all projects)
 
 ```bash
-git clone https://github.com/<you>/SERVICENOW-SKILLS.git
+git clone https://github.com/YuvrajZende/SERVICENOW-SKILLS.git
 mkdir -p ~/.claude/skills
 cp -r SERVICENOW-SKILLS/sn-architect ~/.claude/skills/sn-architect
 ```
 
 Verify with `/skills` inside Claude Code, or by asking: *"Design a ServiceNow app for tracking building access passes"* — the agent should start with the OOTB evaluation, not with a `CREATE TABLE`.
+
+### Via skills.sh (recommended)
+
+```bash
+npx skills add YuvrajZende/SERVICENOW-SKILLS
+```
 
 ### Claude Code (single project)
 
@@ -163,9 +170,33 @@ One full RED/GREEN comparison run (same model, same requirement, ~150-line outpu
 | Verified CLI (`now-sdk install`) | ✗ generic packaging | ✓ verified commands, ATF, Instance Scan |
 | Invented APIs in code sample | ✗ 1 (`setWorkNotes`) | ✓ none |
 
-**Honest caveats:** this is **n=1** — one scenario, one model, one run per arm. It is evidence the skill changes behavior in the targeted directions, not a benchmark. The test also surfaced a real gap: the skill-guided agent still wrote `u.manager + ''` (the GlideElement trap in concatenation form) — plugged in `09-anti-patterns.md` §1 and re-verified with a fresh micro-test (now emits `getValue()` in truthiness/comparison contexts). The baseline agent also beat the skill on one point (before-query business rules for row filtering), which was back-ported into `05-security-design.md`.
+**Honest caveats:** this is **n=1** — one scenario, one model, one run per arm. It is evidence the skill changes behavior in the targeted directions, not a multi-arm benchmark. The test also surfaced real platform nuances (such as before-query business rules for row filtering, and storing primitive values instead of GlideElement object references), which were directly back-ported into `05-security-design.md` and `09-anti-patterns.md`.
 
-More scenarios welcome — [open an issue](../../issues) with the prompt and what went wrong if the skill routes wrong or misses a check.
+### Reproducible Test Cases
+
+To validate the skill across other architectural patterns, run these test cases with and without `sn-architect`:
+
+1. **CMDB / Ingestion:** *"We receive an hourly JSON payload from AWS containing EC2 instances; ingest and update our CMDB server inventory."*
+   - *Target behavior:* Stages via `sys_import_set_row`, routes CI writes through `sn_cmdb.IdentificationEngine` (Rule 6.4), verifies `com.snc.cmdb.scoped`, rejects direct `gr.insert()` to `cmdb_ci_server`.
+2. **Surgical Review Mode:** *"Review this Before Business Rule: it calls an external payment gateway via RESTMessageV2 and executes current.update()."*
+   - *Target behavior:* Operates in surgical mode (does not emit a full 10-section architecture document), isolates Rule 3.1 (`current.update()` in Before BR) and Rule 3.3 (synchronous outbound HTTP) violations, and provides an asynchronous refactoring.
+3. **AI Agent Governance:** *"Design a Now Assist GenAI agent in Customer Service to auto-triage inbound cases and assign priorities."*
+   - *Target behavior:* Enforces Rule 6.5 entitlement check gate, binds minimal scoped tools instead of raw script execution, and requires a human-in-the-loop review point for consequential state mutations.
+
+More scenarios welcome — [open an issue](../../issues) with your prompt and architecture run if the skill routes wrong or misses a check.
+
+## Ecosystem & complementary tools
+
+`sn-architect` focuses specifically on **system architecture and design governance** before code generation. For downstream implementation and task-level execution, it pairs naturally with:
+
+- **[ServiceNow SDK Samples (`ServiceNow/sdk-examples`)](https://github.com/ServiceNow/sdk-examples):** The official ServiceNow repository for runnable Fluent (`.now.ts`) declarative metadata examples across tables, ACLs, and business rules.
+- **[Happy Platform Skills (`Happy-Technologies-LLC/happy-platform-skills`)](https://github.com/Happy-Technologies-LLC/happy-platform-skills):** A library of 180+ task-level procedural skills covering granular admin and operational tasks across ITSM, CSM, and HRSD.
+
+| Layer | Tool | Role |
+|---|---|---|
+| **System Architecture & Governance** | `sn-architect` (this repo) | OOTB evaluation, data model, sync/async logic, ACL package, IRE & AI gates, build order |
+| **Reference Fluent Code** | [`ServiceNow/sdk-examples`](https://github.com/ServiceNow/sdk-examples) | Official TypeScript Fluent patterns for SDK projects |
+| **Task & Operational Execution** | [`happy-platform-skills`](https://github.com/Happy-Technologies-LLC/happy-platform-skills) | Granular procedural recipes for individual platform workflows |
 
 ## Contributing
 

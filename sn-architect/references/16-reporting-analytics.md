@@ -39,9 +39,16 @@
 
 ## 4. Output in the Architecture Document
 
-Every architecture document must include a **Reporting & Analytics Map**:
+When the design includes reporting, dashboards, or Performance Analytics indicators, the architecture document must include a **Reporting & Analytics Map** (template §7D):
 
 | Report / Indicator | Type (Report / PA Indicator / Dashboard) | Persona | Source (table / view / indicator) | Refresh / Collection | Owner |
 |--------------------|------------------------------------------|---------|-----------------------------------|----------------------|-------|
 
 Plus: database views required (with join definitions), and the schema notes that protect reporting (indexed reference fields, no `glide_list` on report-filtered fields).
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Reporting](https://docs.servicenow.com/bundle/xanadu-now-intelligence/page/use/reporting/concept/c_Reporting.html)
+- [ServiceNow Documentation: Database Views](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/use/reporting/concept/c_DatabaseViews.html)
+- [ServiceNow Documentation: Performance Analytics Indicators and Collection](https://docs.servicenow.com/bundle/xanadu-now-intelligence/page/use/performance-analytics/concept/c_PerformanceAnalytics.html)

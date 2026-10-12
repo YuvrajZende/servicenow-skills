@@ -82,7 +82,7 @@ Select relationship mechanisms based on dot-walking, aggregation, and volume nee
 ## 5. Data Model Anti-Patterns to Prevent
 
 1. **Deep Inheritance Chains:** Creating `custom_task` extending `incident` which extends `task`. Every query on the child joins all ancestor tables. Limit inheritance to 1 level from `task`.
-2. **Extending `sys_user`:** Breaks identity provider sync, user lookups, and licensing audits.
+2. **Extending `sys_user` in Custom Applications:** While native platform suites like CSM extend `sys_user` (`customer_contact`), custom scoped applications should avoid extending `sys_user`. Custom user table extensions complicate identity provider (IdP) provisioning, degrade user search query performance across platform pickers, and create licensing ambiguity. Instead, store custom person attributes in a related profile table referencing `sys_user`.
 3. **Using `glide_list` for Core Business Logic:** If business rules or reports must filter on the relationship, a `glide_list` requires expensive `LIKE` or `CONTAINS` queries. Use an M2M table instead.
 4. **Unindexed Foreign Keys:** Forgetting to index reference fields causes table scans on every related list query.
 5. **Over-Normalizing Simple Attributes:** Creating separate lookup tables for 3 static choices. Use Choice Lists (`sys_choice`) for static options; use tables only for dynamically administered master data.
@@ -100,3 +100,10 @@ The data model is not done when the schema is drawn — design how data ages:
 | **Multilingual data** | Translated fields | If personas work in multiple languages, field labels *and* data (choices, text) need translated-field design up front — retrofitting is painful. |
 | **Date/time correctness** | `GlideDateTime` | All server date math in UTC-backed Glide APIs; never naive `new Date()` (see `09-anti-patterns.md`). Document the timezone strategy alongside SLAs (`10-requirements.md`). |
 | **Cross-table reporting** | Database views | Pre-modeled joins for reporting (see `16-reporting-analytics.md`) — designed as schema objects with owners. |
+
+---
+
+## Authoritative Sources
+- [ServiceNow Documentation: Dictionary attributes](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/reference-pages/reference/r_DictionaryAttributes.html)
+- [ServiceNow Documentation: Database indexes](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/managing-data/concept/c_DatabaseIndexes.html)
+- [ServiceNow Documentation: Data Archiving](https://docs.servicenow.com/bundle/xanadu-platform-administration/page/administer/managing-data/concept/c_DataArchiving.html)
