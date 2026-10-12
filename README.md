@@ -183,7 +183,7 @@ To validate the skill across other architectural patterns, run these test cases 
 3. **AI Agent Governance:** *"Design a Now Assist GenAI agent in Customer Service to auto-triage inbound cases and assign priorities."*
    - *Target behavior:* Enforces Rule 6.5 entitlement check gate, binds minimal scoped tools instead of raw script execution, and requires a human-in-the-loop review point for consequential state mutations.
 
-More scenarios welcome — [open an issue](../../issues) with your prompt and architecture run if the skill routes wrong or misses a check.
+More scenarios welcome — [open an issue](https://github.com/YuvrajZende/SERVICENOW-SKILLS/issues) with your prompt and architecture run if the skill routes wrong or misses a check.
 
 ## Ecosystem & complementary tools
 

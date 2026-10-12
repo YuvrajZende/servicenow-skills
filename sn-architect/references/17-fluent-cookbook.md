@@ -16,15 +16,55 @@ Fluent syntax evolves with the SDK. Before generating any `.now.ts` definition:
 
 ---
 
-## 2. Verified Fluent ACL Pattern (from the official `acl-sample`)
+## 2. Verified Canonical Fluent Patterns (from `ServiceNow/sdk-examples`)
 
-Attribution: [ServiceNow/sdk-examples — acl-sample/src/fluent/index.now.ts](https://github.com/ServiceNow/sdk-examples/tree/main/acl-sample). Reproduced to show the canonical shape:
+### 2A. Verified Table & Schema Pattern (from `tables` sample)
+Attribution: [ServiceNow/sdk-examples — tables](https://github.com/ServiceNow/sdk-examples). Defines custom tables with clean inheritance, singular naming, plural display labels, and indexed foreign key references (`01-data-model.md`):
+
+```typescript
+import { Table, StringColumn, ReferenceColumn, ChoiceColumn } from '@servicenow/sdk/core'
+
+export const x_acme_loan_request = Table({
+    name: 'x_acme_loan_request',
+    label: 'Loan Requests',
+    extends: 'task', // Extends task per 01-data-model.md (inherits assignment, SLAs, work notes)
+    schema: {
+        loan_amount: StringColumn({
+            label: 'Loan Amount',
+            maxLength: 40,
+            mandatory: true,
+        }),
+        requested_by: ReferenceColumn({
+            label: 'Requested For',
+            reference: 'sys_user', // Avoid extending sys_user; reference it cleanly
+            mandatory: true,
+        }),
+        status: ChoiceColumn({
+            label: 'Loan Status',
+            choices: {
+                draft: { label: 'Draft', sequence: 0 },
+                submitted: { label: 'Submitted', sequence: 1 },
+                approved: { label: 'Approved', sequence: 2 },
+                rejected: { label: 'Rejected', sequence: 3 },
+            },
+            default: 'draft',
+        }),
+    },
+})
+```
+
+### 2B. Verified Fluent ACL Pattern (from `acl-sample`)
+Attribution: [ServiceNow/sdk-examples — acl-sample](https://github.com/ServiceNow/sdk-examples/tree/main/acl-sample). Demonstrates explicit CRUD and REST endpoint access controls (`05-security-design.md`):
 
 ```typescript
 import { Acl, Role } from '@servicenow/sdk/core'
 
 export const sampleAdmin = Role({
-    name: 'x_acl_sample.admin',
+    name: 'x_acme_loan.admin',
+})
+
+export const sampleFulfiller = Role({
+    name: 'x_acme_loan.fulfiller',
 })
 
 Acl({
@@ -32,8 +72,8 @@ Acl({
     localOrExisting: 'Existing',
     type: 'record',
     operation: 'create',
-    roles: [sampleAdmin, 'x_other_scope.manager'],
-    table: 'x_acl_sample_table',
+    roles: [sampleAdmin, sampleFulfiller],
+    table: 'x_acme_loan_request',
 })
 
 Acl({
@@ -41,13 +81,13 @@ Acl({
     localOrExisting: 'Existing',
     type: 'record',
     operation: 'read',
-    table: 'x_acl_sample_table',
-    condition: 'field=value^active=true',
+    table: 'x_acme_loan_request',
+    condition: 'active=true',
 })
 
 Acl({
     $id: Now.ID['rest_acl'],
-    name: 'sample_api',
+    name: 'loan_api',
     type: 'rest_endpoint',
     operation: 'execute',
     roles: [sampleAdmin],
@@ -55,11 +95,44 @@ Acl({
 })
 ```
 
-**Design notes connecting this to the architecture rules:**
-- One `Acl()` per operation — the explicit CRUD package from `05-security-design.md` maps 1:1 onto four `Acl()` builders (create/read/write/delete) plus a `table.*`-equivalent via field-level rules.
-- `condition` takes an encoded query string — the same condition discipline as Check 2.
-- `securityAttribute` (e.g., `has_admin_role`, `user_is_authenticated`) is the modern attribute-based control referenced in `05-security-design.md` §2.
-- `rest_endpoint` ACLs gate Scripted REST APIs — the `execute` operation pattern from `04-integration-design.md`.
+### 2C. Verified Business Rule & Logic Separation Pattern (from `business-rule` sample)
+Attribution: [ServiceNow/sdk-examples — business-rule](https://github.com/ServiceNow/sdk-examples). Fluent metadata (`.now.ts`) defines the trigger; server-side JavaScript (`/server`) implements the logic (`02-logic-placement.md`):
+
+```typescript
+// src/fluent/business_rules.now.ts
+import { BusinessRule } from '@servicenow/sdk/core'
+import { validateLoanSubmission } from '../server/validateLoanSubmission.js'
+
+export const validateLoanSubmissionRule = BusinessRule({
+    $id: Now.ID['validate_loan_submission'],
+    name: 'Validate Loan Submission',
+    table: 'x_acme_loan_request',
+    when: 'before',
+    action: ['insert', 'update'],
+    order: 100,
+    active: true,
+    script: validateLoanSubmission,
+})
+```
+
+```javascript
+// src/server/validateLoanSubmission.js
+import { gs } from '@servicenow/glide'
+
+export function validateLoanSubmission(current, previous) {
+    // Synchronous validation rule per 02-logic-placement.md & 09-anti-patterns.md
+    if (current.loan_amount.nil()) {
+        gs.addErrorMessage('Loan amount is mandatory before submission.')
+        current.setAbortAction(true) // ABORT is valid only in Before BR; never call current.update()
+    }
+}
+```
+
+**Design notes connecting these patterns to the architecture rules:**
+- `Table()` enforces singular technical table name with plural label, extending `task` when workflow features are needed.
+- `Acl()` enforces explicit CRUD operation definitions; zero empty ACLs (`05-security-design.md`).
+- `BusinessRule()` separates declarative metadata from runnable logic; synchronous validation uses `current.setAbortAction(true)` in Before BR and never calls `current.update()` (`02-logic-placement.md`).
+- `condition` takes encoded query strings; `securityAttribute` uses modern ABAC policies.
 
 ---
 

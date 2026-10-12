@@ -5,7 +5,7 @@ All notable changes to `sn-architect` are documented here. Format follows [Keep 
 ## [1.1.0] — 2026-10-12
 
 ### Added
-- `17-fluent-cookbook.md` — bridge from approved architecture to verified ServiceNow SDK (Fluent) code generation, using official patterns from [ServiceNow/sdk-examples](https://github.com/ServiceNow/sdk-examples); includes the canonical Fluent ACL pattern (attributed) and Fluent anti-patterns (`keys.ts` delete convention, `generated/` output, `localOrExisting` discipline).
+- `17-fluent-cookbook.md` — bridge from approved architecture to verified ServiceNow SDK (Fluent) code generation, using official patterns from [ServiceNow/sdk-examples](https://github.com/ServiceNow/sdk-examples); includes canonical Fluent patterns for Tables, explicit CRUD ACLs, and Business Rules with server-side logic separation (attributed), plus Fluent anti-patterns (`keys.ts` delete convention, `generated/` output, `localOrExisting` discipline).
 - SDK UI Pages with modern JS frameworks (React / Vue / Svelte / SolidJS) added to `03-ui-layer.md` as a distinct, last-resort UI tier with official sample references.
 - `SKILL.md`: implementation step wired into the reasoning loop (architecture → approval → verified Fluent code generation); routing row for the Fluent cookbook.
 - Repo maturity: `CHANGELOG.md`, `CONTRIBUTING.md`, `NOTICE`.
@@ -15,7 +15,7 @@ All notable changes to `sn-architect` are documented here. Format follows [Keep 
 - Conditional template appendices extended (§6C Knowledge Base Map, §7D Reporting & Analytics Map — contributed by author).
 
 ### Verified against official sources
-- Fluent `Acl`/`Role` builder shape from `ServiceNow/sdk-examples/acl-sample`.
+- Fluent `Table`/`Column`, `Acl`/`Role`, and `BusinessRule` builder shapes from `ServiceNow/sdk-examples`.
 - SDK UI Page samples (React/Vue/Svelte/SolidJS) existence and layout confirmed from `ServiceNow/sdk-examples`.
 
 ## [1.0.0] — 2026-10-11
